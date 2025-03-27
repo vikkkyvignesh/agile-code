@@ -23,6 +23,7 @@ import { FcGoogle } from "react-icons/fc";
 import { FaGithub } from "react-icons/fa";
 import Link from "next/link";
 import { useRegister } from "../api/use-register";
+import { signUpWithGithub, signUpWithGoogle } from "@/lib/oauth";
 
 const formSchema = z.object({
   name: z.string().trim().min(1, "Required"),
@@ -128,6 +129,7 @@ export const SignUpCard = () => {
           size={"lg"}
           className="w-full"
           disabled={isPending}
+          onClick={() => signUpWithGoogle()}
         >
           <FcGoogle className="mr-2 size-5" />
           Login with Google
@@ -137,6 +139,7 @@ export const SignUpCard = () => {
           size={"lg"}
           className="w-full"
           disabled={isPending}
+          onClick={() => signUpWithGithub()}
         >
           <FaGithub className="mr-2 size-5" />
           Login with Github
