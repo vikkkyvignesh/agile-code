@@ -13,19 +13,25 @@ const app = new Hono()
     return c.json({ data: user });
   })
   .post("/login", zValidator("json", loginSchema), async (c) => {
-    const { email, password } = c.req.valid("json");
+    try {
+      const { email, password } = c.req.valid("json");
+      console.log(email);
 
-    const { account } = await createAdminClient();
-    const session = await account.createEmailPasswordSession(email, password);
-    setCookie(c, AUTH_COOKIE, session.secret, {
-      path: "/",
-      httpOnly: true,
-      secure: true,
-      sameSite: "strict",
-      maxAge: 60 * 60 * 24 * 30,
-    });
+      const { account } = await createAdminClient();
+      const session = await account.createEmailPasswordSession(email, password);
+      setCookie(c, AUTH_COOKIE, session.secret, {
+        path: "/",
+        httpOnly: true,
+        secure: true,
+        sameSite: "strict",
+        maxAge: 60 * 60 * 24 * 30,
+      });
 
-    return c.json({ email, password });
+      return c.json({ email, password });
+    } catch (error) {
+      console.error("LOGIN ERROR:", error);
+      return c.json({ error: error || "Login failed" }, 500);
+    }
   })
   .post("/register", zValidator("json", registerSchema), async (c) => {
     const { name, email, password } = c.req.valid("json");
